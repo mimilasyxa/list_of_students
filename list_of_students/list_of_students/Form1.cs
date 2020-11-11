@@ -21,23 +21,24 @@ namespace list_of_students
         {
             InitializeComponent();
         }
-
+        //  string sql = string.Format("Insert Into group" +
+                   //"(Lname, Fname, Mname, avg_score ,original_docs, budget) Values('{0}','{1}','{2}',{3},{4},{5})", textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToDouble(textBox4.Text), Convert.ToInt32(checkBox1.Checked), Convert.ToInt32(checkBox2.Checked));
         private void button1_Click(object sender, EventArgs e)
         {
-            /*string Connect = "Server=127.0.0.1;Database=shop;Data Source=localhost;user=root;";  Пока что неработающая часть, ожидаю базу данных для выдачи запросов
+            string Connect = "Server=127.0.0.1;Database=students;Data Source=localhost;user=root;";
             MySqlConnection con = new MySqlConnection(Connect);
             con.Open();
+            string sql = string.Format("Insert Into test" +
+                "(first, second, third, double) Values('{0}','{1}','{2}', '{3}');", textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToInt32(textBox4.Text));
 
-            string filename = filePath.Substring(filePath.LastIndexOf(@"\") + 1);
-            string sql = string.Format("Insert Into goods" +
-                   "(Name, Author, Description, Price ,Quantity, Photo) Values('{0}','{1}','{2}','{3}','{4}','{5}')", textBox1.Text, textBox5.Text, textBox2.Text, textBox3.Text, Convert.ToInt32(textBox4.Text), filename);
+
             using (MySqlCommand cmd = new MySqlCommand(sql, con))
             {
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Добавление прошло успешно", "Добавление прошло успешно", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
 
-            con.Close();*/
+            con.Close();
         }
         private string GetString(string type) {
             if (type == "lname")
@@ -65,7 +66,7 @@ namespace list_of_students
                 textBox1.Text = GetString("lname");
                 textBox2.Text = GetString("fname");
                 textBox3.Text = GetString("mname");
-                textBox4.Text = Math.Round(rand.NextDouble() * 5, 1).ToString();
+                textBox4.Text = (Math.Round(rand.NextDouble() * 5, 1)).ToString();
                 return true;     
             }
             return base.ProcessCmdKey(ref msg, keyData);
