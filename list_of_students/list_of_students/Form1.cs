@@ -12,6 +12,9 @@ namespace list_of_students
 {
     public partial class Form1 : Form
     {
+        public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх"};
+        public static string[] fname = { "Алекс", "Кортни", "Тейлор", "Медисон", "Пейдж", "Эрин" };
+        public static string[] mname = { "Александровна", "Никитович", "Матвеевич", "Михайловна", "Денисович", "Романович" };
         public Form1()
         {
             InitializeComponent();
@@ -33,6 +36,24 @@ namespace list_of_students
             }
 
             con.Close();*/
+        }
+        private string GetString(string type) {
+            if (type == "Lname")
+            {
+
+            }
+
+            return "а";
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.R))
+            {
+                textBox1.Text = lname[0];   // Implement the Ctrl+F short-cut keystroke
+                return true;     // This keystroke was handled, don't pass to the control with the focus
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }
