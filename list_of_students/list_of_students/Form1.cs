@@ -12,6 +12,7 @@ namespace list_of_students
 {
     public partial class Form1 : Form
     {
+        Random rand = new Random();
         public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх"};
         public static string[] fname = { "Алекс", "Кортни", "Тейлор", "Медисон", "Пейдж", "Эрин" };
         public static string[] mname = { "Александровна", "Никитович", "Матвеевич", "Михайловна", "Денисович", "Романович" };
@@ -38,20 +39,33 @@ namespace list_of_students
             con.Close();*/
         }
         private string GetString(string type) {
-            if (type == "Lname")
+            if (type == "lname")
             {
-
+                return lname[rand.Next(6)];
             }
-
-            return "а";
+            if (type == "fname")
+            {
+                return fname[rand.Next(6)];
+            }
+            if (type == "mname")
+            {
+                return mname[rand.Next(6)];
+            }
+            else
+            {
+                return "error";
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.R))
             {
-                textBox1.Text = lname[0];   // Implement the Ctrl+F short-cut keystroke
-                return true;     // This keystroke was handled, don't pass to the control with the focus
+                textBox1.Text = GetString("lname");
+                textBox2.Text = GetString("fname");
+                textBox3.Text = GetString("mname");
+                textBox4.Text = Math.Round(rand.NextDouble() * 5, 1).ToString();
+                return true;     
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
