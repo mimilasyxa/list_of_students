@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace list_of_students
 {
@@ -23,7 +24,7 @@ namespace list_of_students
 
         private void button1_Click(object sender, EventArgs e)
         {
-            /*string Connect = "Server=127.0.0.1;Database=shop;Data Source=localhost;user=root;";
+            /*string Connect = "Server=127.0.0.1;Database=shop;Data Source=localhost;user=root;";  Пока что неработающая часть, ожидаю базу данных для выдачи запросов
             MySqlConnection con = new MySqlConnection(Connect);
             con.Open();
 
