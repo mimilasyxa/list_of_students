@@ -10,3 +10,14 @@ C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_stude
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.pdb
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\MySql.Data.dll
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.CopyComplete
+D:\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\list_of_students.exe.config
+D:\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\list_of_students.exe
+D:\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\list_of_students.pdb
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csprojAssemblyReference.cache
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.Form1.resources
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.Properties.Resources.resources
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.GenerateResource.cache
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.CoreCompileInputs.cache
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.CopyComplete
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.exe
+D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.pdb
