@@ -1,7 +1,6 @@
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\list_of_students.exe.config
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\list_of_students.exe
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\list_of_students.pdb
-C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csprojAssemblyReference.cache
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.Form1.resources
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.Properties.Resources.resources
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.GenerateResource.cache
@@ -10,3 +9,4 @@ C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_stude
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.pdb
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\bin\Debug\MySql.Data.dll
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.CopyComplete
+C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csprojAssemblyReference.cache
