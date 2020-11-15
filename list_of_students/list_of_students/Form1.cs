@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 
-namespace list_of_students
+namespace list_of_students // Тут происходит чёрт пойми что, при переходе с MySqlConnnect на SqlConnect всё полетело к чертям, без charset не получается присоединиться к серверу и посылать запросы
 {
     public partial class Form1 : Form
     {
+        public static string Connect = "Server=127.0.0.1;Database=testbase;Data Source=localhost;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        public SqlConnection con = new SqlConnection(Connect);
         Random rand = new Random();
         public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх"};
         public static string[] fname = { "Алекс", "Кортни", "Тейлор", "Медисон", "Пейдж", "Эрин" };
@@ -23,11 +26,8 @@ namespace list_of_students
         }
         //  string sql = string.Format("Insert Into group" +
                    //"(Lname, Fname, Mname, avg_score ,original_docs, budget) Values('{0}','{1}','{2}',{3},{4},{5})", textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToDouble(textBox4.Text), Convert.ToInt32(checkBox1.Checked), Convert.ToInt32(checkBox2.Checked));
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e) // ввод студента в группу
         {
-            string Connect = "Server=127.0.0.1;Database=testbase;Data Source=localhost;user=root;password=123123;CharSet=utf8";
-            MySqlConnection con = new MySqlConnection(Connect);
-            con.Open();
             string orig_docs = "Да";
             string budget = "Да";
             if (checkBox1.Checked == false) {
@@ -43,13 +43,11 @@ namespace list_of_students
                 "(lname, fname, mname, avg_score, original_docs, budget) Values('{0}','{1}','{2}', '{3}', '{4}', '{5}');", textBox1.Text, textBox2.Text, textBox3.Text, avg_score, orig_docs, budget);
 
 
-            using (MySqlCommand cmd = new MySqlCommand(sql, con))
+            using (SqlCommand cmd = new SqlCommand(sql, con))
             {
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Добавление прошло успешно", "Добавление прошло успешно", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
-
-            con.Close();
         }
         private string GetString(string type) {
             if (type == "lname")
@@ -81,6 +79,26 @@ namespace list_of_students
                 return true;     
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e) // при загрузке формы 1 происходит выборка всех групп
+        {
+            string sql = string.Format("select group_name from _Groups");
+            con.Open();
+            SqlCommand cmd = new SqlCommand(sql, con);
+            SqlDataReader dataReader = cmd.ExecuteReader();
+            string result = (string)cmd.ExecuteScalar();
+            textBox1.Text = result;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e) // закрытие соединения с бд при закрытии формы 1
+        {
+            con.Close();
         }
     }
 }
