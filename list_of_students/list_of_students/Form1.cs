@@ -29,6 +29,7 @@ namespace list_of_students // Тут происходит чёрт пойми ч
                    //"(Lname, Fname, Mname, avg_score ,original_docs, budget) Values('{0}','{1}','{2}',{3},{4},{5})", textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToDouble(textBox4.Text), Convert.ToInt32(checkBox1.Checked), Convert.ToInt32(checkBox2.Checked));
         private void button1_Click(object sender, EventArgs e) // ввод студента в группу
         {
+            
             int orig_docs = 1;
             string budget = "Да";
             if (checkBox1.Checked == false) {
@@ -107,6 +108,12 @@ namespace list_of_students // Тут происходит чёрт пойми ч
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) // закрытие соединения с бд при закрытии формы 1
         {
             con.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form2 secondform = new Form2(comboBox1);
+            secondform.Show();
         }
     }
 }
