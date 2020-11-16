@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Reflection;
 
 namespace list_of_students // Тут происходит чёрт пойми что, при переходе с MySqlConnnect на SqlConnect всё полетело к чертям, без charset не получается присоединиться к серверу и посылать запросы
 {
@@ -114,6 +116,26 @@ namespace list_of_students // Тут происходит чёрт пойми ч
         {
             Form2 secondform = new Form2(comboBox1);
             secondform.Show();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Excel.Workbooks objBooks;
+            Excel.Sheets objSheets;
+            Excel._Worksheet objSheet;
+            Excel.Range range;
+            Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
+            ex.Visible = true;
+            ex.SheetsInNewWorkbook = 2;
+            Excel.Workbook workBook = ex.Workbooks.Add(Type.Missing);
+            ex.DisplayAlerts = false;
+            Excel.Worksheet sheet = (Excel.Worksheet)ex.Worksheets.get_Item(1);
+            sheet.Name = comboBox1.SelectedItem.ToString();
+            for (int i = 1; i <= 9; i++)
+            {
+                for (int j = 1; j < 9; j++)
+                    sheet.Cells[i, j] = String.Format("Boom {0} {1}", i, j);
+            }
         }
     }
 }

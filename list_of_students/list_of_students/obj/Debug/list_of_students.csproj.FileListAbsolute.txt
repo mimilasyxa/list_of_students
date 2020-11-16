@@ -36,3 +36,4 @@ C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_stude
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csprojAssemblyReference.cache
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.exe.config
 C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.Form2.resources
+C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.ResolveComReference.cache
