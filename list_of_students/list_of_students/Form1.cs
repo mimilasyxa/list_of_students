@@ -14,8 +14,8 @@ namespace list_of_students // Тут происходит чёрт пойми ч
 {
     public partial class Form1 : Form
     {
-        //public static string Connect = "Server=127.0.0.1;Database=testbase;Data Source=localhost;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
-        public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
+        public static string Connect = "Server=localhost;Database=testbase;Data Source=localhost;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        //public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
         public MySqlConnection con = new MySqlConnection(Connect);
         Random rand = new Random();
         public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх"};
@@ -86,17 +86,14 @@ namespace list_of_students // Тут происходит чёрт пойми ч
         {
 
         }
-/*
+
         private void Form1_Load(object sender, EventArgs e) // при загрузке формы 1 происходит выборка всех групп
         {
-            string sql = string.Format("select group_name from _Groups");
+            string sql = string.Format("select group_name from _groups");
             con.Open();
             MySqlCommand cmd = new MySqlCommand(sql, con);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-            string result = (string)cmd.ExecuteScalar();
-            textBox1.Text = result;
+            ///MySqlDataReader dataReader = cmd.ExecuteReader();
         }
-*/
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) // закрытие соединения с бд при закрытии формы 1
         {

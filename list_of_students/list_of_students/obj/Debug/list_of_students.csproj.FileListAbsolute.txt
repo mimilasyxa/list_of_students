@@ -20,3 +20,4 @@ D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_s
 D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csproj.CopyComplete
 D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.exe
 D:\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.pdb
+C:\Users\Lofkes\Documents\GitHub\list_of_students\list_of_students\list_of_students\obj\Debug\list_of_students.csprojAssemblyReference.cache

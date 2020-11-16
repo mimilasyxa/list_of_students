@@ -96,7 +96,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(100, 20);
             this.textBox1.TabIndex = 5;
-            this.textBox1.Text = "Вайцель";
             // 
             // textBox2
             // 
@@ -104,7 +103,6 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 6;
-            this.textBox2.Text = "Денис";
             // 
             // textBox3
             // 
@@ -112,7 +110,6 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(100, 20);
             this.textBox3.TabIndex = 7;
-            this.textBox3.Text = "Эдуардович";
             // 
             // textBox4
             // 
@@ -189,6 +186,7 @@
             this.Name = "Form1";
             this.Text = "Управление списком студентов";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
