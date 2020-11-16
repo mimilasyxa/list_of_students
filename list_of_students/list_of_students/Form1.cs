@@ -14,7 +14,7 @@ namespace list_of_students // Тут происходит чёрт пойми ч
 {
     public partial class Form1 : Form
     {
-        public static string Connect = "Server=localhost;Database=testbase;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
         //public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
         public MySqlConnection con = new MySqlConnection(Connect);
         Random rand = new Random();
@@ -29,10 +29,10 @@ namespace list_of_students // Тут происходит чёрт пойми ч
                    //"(Lname, Fname, Mname, avg_score ,original_docs, budget) Values('{0}','{1}','{2}',{3},{4},{5})", textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToDouble(textBox4.Text), Convert.ToInt32(checkBox1.Checked), Convert.ToInt32(checkBox2.Checked));
         private void button1_Click(object sender, EventArgs e) // ввод студента в группу
         {
-            string orig_docs = "Да";
+            int orig_docs = 1;
             string budget = "Да";
             if (checkBox1.Checked == false) {
-                orig_docs = "Нет";
+                orig_docs = 2;
             }
             if (checkBox2.Checked == false)
             {
@@ -40,8 +40,8 @@ namespace list_of_students // Тут происходит чёрт пойми ч
             }
             float num = float.Parse(textBox4.Text);
             string avg_score = num.ToString().Replace(',', '.');
-            string sql = string.Format("Insert Into studs" +
-                "(lname, fname, mname, avg_score, original_docs, budget) Values('{0}','{1}','{2}', '{3}', '{4}', '{5}');", textBox1.Text, textBox2.Text, textBox3.Text, avg_score, orig_docs, budget);
+            string sql = string.Format("Insert Into students" +
+                "(lname, fname, mname, average_score, fk_id_original_documents, budget, fk_id_groups) Values('{0}','{1}','{2}', '{3}', '{4}', '{5}', '{6}');", textBox1.Text, textBox2.Text, textBox3.Text, avg_score, orig_docs, budget, (comboBox1.SelectedIndex + 1));
 
 
             using (MySqlCommand cmd = new MySqlCommand(sql, con))
@@ -84,16 +84,24 @@ namespace list_of_students // Тут происходит чёрт пойми ч
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+ 
         }
 
         private void Form1_Load(object sender, EventArgs e) // при загрузке формы 1 происходит выборка всех групп
         {
-            string sql = string.Format("select * from studs");
+            string sql = string.Format("select * from students.groups");
             con.Open();
             MySqlCommand cmd = new MySqlCommand(sql, con);
             MySqlDataReader dataReader; 
             dataReader = cmd.ExecuteReader();
+            if (dataReader.HasRows)
+            {
+                while (dataReader.Read())
+                {
+                    comboBox1.Items.Add(dataReader["group"].ToString());
+                }
+            }
+            dataReader.Close();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) // закрытие соединения с бд при закрытии формы 1
