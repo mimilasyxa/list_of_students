@@ -120,6 +120,14 @@ namespace list_of_students // Тут происходит чёрт пойми ч
 
         private void button3_Click(object sender, EventArgs e)
         {
+            int row = 2;
+            int counter = 1;
+            string sql = string.Format("select id_students , lname , fname , mname, average_score, original_documents, budget, " + 
+                " students.groups.group from students, students.groups, original_documents where groups.group = '{0}' AND students.fk_id_groups = students.groups.id_groups " + "" +
+                " and students.fk_id_original_documents = original_documents.id_original_documents and id_students < 26 order by average_score desc, fk_id_original_documents asc;", comboBox1.SelectedItem);
+            MySqlCommand cmd = new MySqlCommand(sql, con);
+            MySqlDataReader dataReader;
+            dataReader = cmd.ExecuteReader();
             Excel.Workbooks objBooks;
             Excel.Sheets objSheets;
             Excel._Worksheet objSheet;
@@ -131,11 +139,29 @@ namespace list_of_students // Тут происходит чёрт пойми ч
             ex.DisplayAlerts = false;
             Excel.Worksheet sheet = (Excel.Worksheet)ex.Worksheets.get_Item(1);
             sheet.Name = comboBox1.SelectedItem.ToString();
-            for (int i = 1; i <= 9; i++)
+            // Заполнение названий столбцов (номер студента, фамилия, имя и так далее)
+            sheet.StandardWidth = 25;
+            sheet.Cells[1, 1] = "№";
+            sheet.Columns[1].ColumnWidth = 5;
+            sheet.Cells[1, 2] = "Фамилия";
+            sheet.Cells[1, 3] = "Имя";
+            sheet.Cells[1, 4] = "Отчество";
+            sheet.Cells[1, 5] = "Средний балл";
+            sheet.Cells[1, 6] = "Оригиналы документов";
+            sheet.Cells[1, 7] = "Бюджетник";
+            while (dataReader.Read())
             {
-                for (int j = 1; j < 9; j++)
-                    sheet.Cells[i, j] = String.Format("Boom {0} {1}", i, j);
+                sheet.Cells[row, 1] = counter;
+                sheet.Cells[row, 2] = dataReader["lname"].ToString();
+                sheet.Cells[row, 3] = dataReader["fname"].ToString();
+                sheet.Cells[row, 4] = dataReader["mname"].ToString();
+                sheet.Cells[row, 5] = Convert.ToDecimal(dataReader["average_score"]);
+                sheet.Cells[row, 6] = dataReader["original_documents"].ToString();
+                sheet.Cells[row, 7] = dataReader["budget"].ToString();
+                counter++;
+                row++;
             }
+            dataReader.Close();
         }
     }
 }
