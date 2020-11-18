@@ -16,8 +16,8 @@ namespace list_of_students // Тут происходит чёрт пойми ч
 {
     public partial class Form1 : Form
     {
-        public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
-        //public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
+        //public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
         public MySqlConnection con = new MySqlConnection(Connect);
         Random rand = new Random();
         public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх"};
@@ -31,26 +31,46 @@ namespace list_of_students // Тут происходит чёрт пойми ч
                    //"(Lname, Fname, Mname, avg_score ,original_docs, budget) Values('{0}','{1}','{2}',{3},{4},{5})", textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToDouble(textBox4.Text), Convert.ToInt32(checkBox1.Checked), Convert.ToInt32(checkBox2.Checked));
         private void button1_Click(object sender, EventArgs e) // ввод студента в группу
         {
-            
-            int orig_docs = 1;
-            string budget = "Да";
-            if (checkBox1.Checked == false) {
-                orig_docs = 2;
-            }
-            if (checkBox2.Checked == false)
+            try
             {
-                budget = "Нет";
-            }
-            float num = float.Parse(textBox4.Text);
-            string avg_score = num.ToString().Replace(',', '.');
-            string sql = string.Format("Insert Into students" +
-                "(lname, fname, mname, average_score, fk_id_original_documents, budget, fk_id_groups) Values('{0}','{1}','{2}', '{3}', '{4}', '{5}', '{6}');", textBox1.Text, textBox2.Text, textBox3.Text, avg_score, orig_docs, budget, (comboBox1.SelectedIndex + 1));
+                if (textBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" || textBox4.Text == "")
+                {
+                    MessageBox.Show("Поля (Фамилия, Имя, Отчество, Средний балл) обязательны к заполнению", "Ошибка");
+                }
+
+                int orig_docs = 1;
+                string budget = "Да";
+                if (checkBox1.Checked == false)
+                {
+                    orig_docs = 2;
+                }
+                if (checkBox2.Checked == false)
+                {
+                    budget = "Нет";
+                }
+                float num = float.Parse(textBox4.Text);
+                string avg_score = num.ToString().Replace(',', '.');
+                string sql = string.Format("Insert Into students" +
+                    "(lname, fname, mname, average_score, fk_id_original_documents, budget, fk_id_groups) Values('{0}','{1}','{2}', '{3}', '{4}', '{5}', '{6}');", textBox1.Text, textBox2.Text, textBox3.Text, avg_score, orig_docs, budget, (comboBox1.SelectedIndex + 1));
 
 
-            using (MySqlCommand cmd = new MySqlCommand(sql, con))
+                using (MySqlCommand cmd = new MySqlCommand(sql, con))
+                {
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Добавление прошло успешно", "Добавление прошло успешно", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
+                    catch (MySql.Data.MySqlClient.MySqlException)
+                    {
+                        MessageBox.Show("Выберите группу для абитуриента", "Ошибка");
+
+                    }
+                }
+            }
+            catch (Exception)
             {
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Добавление прошло успешно", "Добавление прошло успешно", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+
             }
         }
         private string GetString(string type) {
@@ -92,19 +112,27 @@ namespace list_of_students // Тут происходит чёрт пойми ч
 
         private void Form1_Load(object sender, EventArgs e) // при загрузке формы 1 происходит выборка всех групп
         {
-            string sql = string.Format("select * from students.groups");
-            con.Open();
-            MySqlCommand cmd = new MySqlCommand(sql, con);
-            MySqlDataReader dataReader; 
-            dataReader = cmd.ExecuteReader();
-            if (dataReader.HasRows)
+            try
             {
-                while (dataReader.Read())
+                string sql = string.Format("select * from students.groups");
+                con.Open();
+                MySqlCommand cmd = new MySqlCommand(sql, con);
+                MySqlDataReader dataReader;
+                dataReader = cmd.ExecuteReader();
+                if (dataReader.HasRows)
                 {
-                    comboBox1.Items.Add(dataReader["group"].ToString());
+                    while (dataReader.Read())
+                    {
+                        comboBox1.Items.Add(dataReader["group"].ToString());
+                    }
                 }
+                dataReader.Close();
             }
-            dataReader.Close();
+            catch (Exception)
+            {
+                MessageBox.Show("Недействительное подключение к базе данных", "Ошибка подключения");
+                Application.Exit();
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) // закрытие соединения с бд при закрытии формы 1
@@ -120,48 +148,60 @@ namespace list_of_students // Тут происходит чёрт пойми ч
 
         private void button3_Click(object sender, EventArgs e)
         {
-            int row = 2;
-            int counter = 1;
-            string sql = string.Format("select id_students , lname , fname , mname, average_score, original_documents, budget, " + 
-                " students.groups.group from students, students.groups, original_documents where groups.group = '{0}' AND students.fk_id_groups = students.groups.id_groups " + "" +
-                " and students.fk_id_original_documents = original_documents.id_original_documents and id_students < 26 order by average_score desc, fk_id_original_documents asc;", comboBox1.SelectedItem);
-            MySqlCommand cmd = new MySqlCommand(sql, con);
-            MySqlDataReader dataReader;
-            dataReader = cmd.ExecuteReader();
-            Excel.Workbooks objBooks;
-            Excel.Sheets objSheets;
-            Excel._Worksheet objSheet;
-            Excel.Range range;
-            Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
-            ex.Visible = true;
-            ex.SheetsInNewWorkbook = 2;
-            Excel.Workbook workBook = ex.Workbooks.Add(Type.Missing);
-            ex.DisplayAlerts = false;
-            Excel.Worksheet sheet = (Excel.Worksheet)ex.Worksheets.get_Item(1);
-            sheet.Name = comboBox1.SelectedItem.ToString();
-            // Заполнение названий столбцов (номер студента, фамилия, имя и так далее)
-            sheet.StandardWidth = 25;
-            sheet.Cells[1, 1] = "№";
-            sheet.Columns[1].ColumnWidth = 5;
-            sheet.Cells[1, 2] = "Фамилия";
-            sheet.Cells[1, 3] = "Имя";
-            sheet.Cells[1, 4] = "Отчество";
-            sheet.Cells[1, 5] = "Средний балл";
-            sheet.Cells[1, 6] = "Оригиналы документов";
-            sheet.Cells[1, 7] = "Бюджетник";
-            while (dataReader.Read())
+            try
             {
-                sheet.Cells[row, 1] = counter;
-                sheet.Cells[row, 2] = dataReader["lname"].ToString();
-                sheet.Cells[row, 3] = dataReader["fname"].ToString();
-                sheet.Cells[row, 4] = dataReader["mname"].ToString();
-                sheet.Cells[row, 5] = Convert.ToDecimal(dataReader["average_score"]);
-                sheet.Cells[row, 6] = dataReader["original_documents"].ToString();
-                sheet.Cells[row, 7] = dataReader["budget"].ToString();
-                counter++;
-                row++;
+                int row = 2;
+                int counter = 1;
+                string sql = string.Format("select id_students , lname , fname , mname, average_score, original_documents, budget, " +
+                    " students.groups.group from students, students.groups, original_documents where groups.group = '{0}' AND students.fk_id_groups = students.groups.id_groups " + "" +
+                    " and students.fk_id_original_documents = original_documents.id_original_documents and id_students < 26 order by average_score desc, fk_id_original_documents asc;", comboBox1.SelectedItem);
+                MySqlCommand cmd = new MySqlCommand(sql, con);
+                MySqlDataReader dataReader;
+                if (comboBox1.Text == "<Выбор группы>")
+                {
+                    MessageBox.Show("Выбери группу", "Ошибка");
+                    Application.Restart();
+                }
+                dataReader = cmd.ExecuteReader();
+                Excel.Workbooks objBooks;
+                Excel.Sheets objSheets;
+                Excel._Worksheet objSheet;
+                Excel.Range range;
+                Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
+                ex.Visible = true;
+                ex.SheetsInNewWorkbook = 2;
+                Excel.Workbook workBook = ex.Workbooks.Add(Type.Missing);
+                ex.DisplayAlerts = false;
+                Excel.Worksheet sheet = (Excel.Worksheet)ex.Worksheets.get_Item(1);
+                sheet.Name = comboBox1.SelectedItem.ToString();
+                // Заполнение названий столбцов (номер студента, фамилия, имя и так далее)
+                sheet.StandardWidth = 25;
+                sheet.Cells[1, 1] = "№";
+                sheet.Columns[1].ColumnWidth = 5;
+                sheet.Cells[1, 2] = "Фамилия";
+                sheet.Cells[1, 3] = "Имя";
+                sheet.Cells[1, 4] = "Отчество";
+                sheet.Cells[1, 5] = "Средний балл";
+                sheet.Cells[1, 6] = "Оригиналы документов";
+                sheet.Cells[1, 7] = "Бюджетник";
+                while (dataReader.Read())
+                {
+                    sheet.Cells[row, 1] = counter;
+                    sheet.Cells[row, 2] = dataReader["lname"].ToString();
+                    sheet.Cells[row, 3] = dataReader["fname"].ToString();
+                    sheet.Cells[row, 4] = dataReader["mname"].ToString();
+                    sheet.Cells[row, 5] = Convert.ToDecimal(dataReader["average_score"]);
+                    sheet.Cells[row, 6] = dataReader["original_documents"].ToString();
+                    sheet.Cells[row, 7] = dataReader["budget"].ToString();
+                    counter++;
+                    row++;
+                }
+                dataReader.Close();
             }
-            dataReader.Close();
+            catch(Exception)
+            {
+
+            }
         }
     }
 }

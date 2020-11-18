@@ -16,7 +16,8 @@ namespace list_of_students
 {
     public partial class Form2 : Form
     {
-        public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        //public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
         public MySqlConnection con = new MySqlConnection(Connect);
         private ComboBox group_list;
         public Form2(ComboBox groups)
@@ -28,12 +29,20 @@ namespace list_of_students
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string sql = string.Format("Insert Into students.groups(groups.group) Values ('{0}');", textBox1.Text);
-            using (MySqlCommand cmd = new MySqlCommand(sql, con))
+            if (textBox1.Text == "")
             {
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Добавление прошло успешно", "Добавление прошло успешно", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                group_list.Items.Add(textBox1.Text);
+                MessageBox.Show("Да нельзя!", "Хватит");
+            }
+            else
+            {
+                string sql = string.Format("Insert Into students.groups(groups.group) Values ('{0}');", textBox1.Text);
+                using (MySqlCommand cmd = new MySqlCommand(sql, con))
+                {
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Добавление прошло успешно", "Добавление прошло успешно", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    group_list.Items.Add(textBox1.Text);
+                    this.Close();
+                }
             }
         }
 
