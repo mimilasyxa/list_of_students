@@ -165,7 +165,6 @@
             this.comboBox1.Size = new System.Drawing.Size(118, 21);
             this.comboBox1.TabIndex = 13;
             this.comboBox1.Text = "<Выбор группы>";
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label7
             // 

@@ -12,12 +12,12 @@ using MySql.Data.MySqlClient;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Reflection;
 
-namespace list_of_students // Тут происходит чёрт пойми что, при переходе с MySqlConnnect на SqlConnect всё полетело к чертям, без charset не получается присоединиться к серверу и посылать запросы
+namespace list_of_students // После неудачной попытки перехода на Sql мы вернулись к MySql
 {
     public partial class Form1 : Form
     {
-        //public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
-        public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
+        public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        //public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
         public MySqlConnection con = new MySqlConnection(Connect);
         Random rand = new Random();
         public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх"};
@@ -27,13 +27,11 @@ namespace list_of_students // Тут происходит чёрт пойми ч
         {
             InitializeComponent();
         }
-        //  string sql = string.Format("Insert Into group" +
-                   //"(Lname, Fname, Mname, avg_score ,original_docs, budget) Values('{0}','{1}','{2}',{3},{4},{5})", textBox1.Text, textBox2.Text, textBox3.Text, Convert.ToDouble(textBox4.Text), Convert.ToInt32(checkBox1.Checked), Convert.ToInt32(checkBox2.Checked));
         private void button1_Click(object sender, EventArgs e) // ввод студента в группу
         {
             try
             {
-                if (textBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" || textBox4.Text == "")
+                if (textBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" || textBox4.Text == "") // Проверка на то что в формах есть хоть что-то
                 {
                     MessageBox.Show("Поля (Фамилия, Имя, Отчество, Средний балл) обязательны к заполнению", "Ошибка");
                 }
@@ -49,10 +47,10 @@ namespace list_of_students // Тут происходит чёрт пойми ч
                     budget = "Нет";
                 }
                 float num = float.Parse(textBox4.Text);
-                string avg_score = num.ToString().Replace(',', '.');
+                string avg_score = num.ToString().Replace(',', '.'); // Облегчённая работа с float, пользователь может использовать как точку так и запятую при вводе среднего бала
                 string sql = string.Format("Insert Into students" +
                     "(lname, fname, mname, average_score, fk_id_original_documents, budget, fk_id_groups) Values('{0}','{1}','{2}', '{3}', '{4}', '{5}', '{6}');", textBox1.Text, textBox2.Text, textBox3.Text, avg_score, orig_docs, budget, (comboBox1.SelectedIndex + 1));
-
+                // Ввод студента, берутся все данные из форм и переключателей
 
                 using (MySqlCommand cmd = new MySqlCommand(sql, con))
                 {
@@ -92,7 +90,7 @@ namespace list_of_students // Тут происходит чёрт пойми ч
             }
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // Функция для работы горячих клавиш, в нашем случае ctrl + R генерирует случайного студента
         {
             if (keyData == (Keys.Control | Keys.R))
             {
@@ -104,12 +102,6 @@ namespace list_of_students // Тут происходит чёрт пойми ч
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
- 
-        }
-
         private void Form1_Load(object sender, EventArgs e) // при загрузке формы 1 происходит выборка всех групп
         {
             try
@@ -140,17 +132,17 @@ namespace list_of_students // Тут происходит чёрт пойми ч
             con.Close();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) // Создание второй формы и передача в неё ComboBox1 который хранит в себе группы для последующего добавления новой группы
         {
             Form2 secondform = new Form2(comboBox1);
             secondform.Show();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e) // Вывод отфильтрованных студентов в книгу MS Excel
         {
             try
             {
-                int row = 2;
+                int row = 2; // Начинаем с 2 т.к первая строчка хранит в себе оглавление таблицы
                 int counter = 1;
                 string sql = string.Format("select id_students , lname , fname , mname, average_score, original_documents, budget, " +
                     " students.groups.group from students, students.groups, original_documents where groups.group = '{0}' AND students.fk_id_groups = students.groups.id_groups " + "" +
@@ -163,10 +155,6 @@ namespace list_of_students // Тут происходит чёрт пойми ч
                     Application.Restart();
                 }
                 dataReader = cmd.ExecuteReader();
-                Excel.Workbooks objBooks;
-                Excel.Sheets objSheets;
-                Excel._Worksheet objSheet;
-                Excel.Range range;
                 Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
                 ex.Visible = true;
                 ex.SheetsInNewWorkbook = 2;
