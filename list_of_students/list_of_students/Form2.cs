@@ -35,7 +35,7 @@ namespace list_of_students
             }
             else
             {
-                string sql = string.Format("Insert Into students.groups(groups.group) Values ('{0}');", textBox1.Text);
+                string sql = string.Format("Insert Into name_specialty(name_specialty.name_specialty, specialty_code) Values ('{0}', '{1}');", textBox1.Text, textBox2.Text);
                 using (MySqlCommand cmd = new MySqlCommand(sql, con))
                 {
                     cmd.ExecuteNonQuery();

@@ -160,28 +160,28 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(755, 81);
+            this.comboBox1.Location = new System.Drawing.Point(761, 85);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(118, 21);
+            this.comboBox1.Size = new System.Drawing.Size(233, 21);
             this.comboBox1.TabIndex = 13;
-            this.comboBox1.Text = "<Выбор группы>";
+            this.comboBox1.Text = "<Выбор направления>";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(782, 55);
+            this.label7.Location = new System.Drawing.Point(850, 55);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(42, 13);
+            this.label7.Size = new System.Drawing.Size(75, 13);
             this.label7.TabIndex = 14;
-            this.label7.Text = "Группа";
+            this.label7.Text = "Направление";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(740, 137);
+            this.button2.Location = new System.Drawing.Point(791, 137);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(142, 23);
+            this.button2.Size = new System.Drawing.Size(193, 23);
             this.button2.TabIndex = 15;
-            this.button2.Text = "Создать новую группу";
+            this.button2.Text = "Создать новое направление";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -199,7 +199,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(903, 197);
+            this.ClientSize = new System.Drawing.Size(1032, 197);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label7);
