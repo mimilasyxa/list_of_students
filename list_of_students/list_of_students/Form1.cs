@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
-using Excel = Microsoft.Office.Interop.Excel;
+using Word = Microsoft.Office.Interop.Word;
 using System.Reflection;
 
 namespace list_of_students // После неудачной попытки перехода на Sql мы вернулись к MySql
@@ -171,13 +171,13 @@ namespace list_of_students // После неудачной попытки пе�
         }
 
         private void button3_Click(object sender, EventArgs e) // Вывод отфильтрованных студентов в книгу MS Excel
-        {
+        { 
                 int row = 2; // Начинаем с 2 т.к первая строчка хранит в себе оглавление таблицы
                 int counter = 1;
                 string sql = string.Format("select id_student, lname, fname, mname, " +
                     " average_score, original_documents, budget, name_specialty, " + 
                     " specialty_code from student, name_specialty, original_documents where student.fk_id_name_specialty = '{0}' and  student.fk_id_name_specialty = name_specialty.id_name_specialty  " + " " +
-                    "and student.fk_id_original_documents = original_documents.id_original_documents and id_student < 25 order by average_score desc, fk_id_original_documents asc;", (comboBox1.SelectedIndex + 1));
+                    "and student.fk_id_original_documents = original_documents.id_original_documents order by average_score desc, fk_id_original_documents asc;", (comboBox1.SelectedIndex + 1));
                 MySqlCommand cmd = new MySqlCommand(sql, con);
                 MySqlDataReader dataReader;
                 if (comboBox1.Text == "<Выбор направления>")
@@ -185,37 +185,27 @@ namespace list_of_students // После неудачной попытки пе�
                     MessageBox.Show("Выбери группу", "Ошибка");
                     Application.Restart();
                 }
-                dataReader = cmd.ExecuteReader();
-                Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
-                ex.Visible = true;
-                ex.SheetsInNewWorkbook = 2;
-                Excel.Workbook workBook = ex.Workbooks.Add(Type.Missing);
-                ex.DisplayAlerts = false;
-                Excel.Worksheet sheet = (Excel.Worksheet)ex.Worksheets.get_Item(1);
-                sheet.Name = comboBox1.SelectedItem.ToString();
-                // Заполнение названий столбцов (номер студента, фамилия, имя и так далее)
-                sheet.StandardWidth = 25;
-                sheet.Cells[1, 1] = "№";
-                sheet.Columns[1].ColumnWidth = 5;
-                sheet.Cells[1, 2] = "Фамилия";
-                sheet.Cells[1, 3] = "Имя";
-                sheet.Cells[1, 4] = "Отчество";
-                sheet.Cells[1, 5] = "Средний балл";
-                sheet.Cells[1, 6] = "Оригиналы документов";
-                sheet.Cells[1, 7] = "Бюджетник";
-                while (dataReader.Read())
-                {
-                    sheet.Cells[row, 1] = counter;
-                    sheet.Cells[row, 2] = dataReader["lname"].ToString();
-                    sheet.Cells[row, 3] = dataReader["fname"].ToString();
-                    sheet.Cells[row, 4] = dataReader["mname"].ToString();
-                    sheet.Cells[row, 5] = Convert.ToDecimal(dataReader["average_score"]);
-                    sheet.Cells[row, 6] = dataReader["original_documents"].ToString();
-                    sheet.Cells[row, 7] = dataReader["budget"].ToString();
-                    counter++;
-                    row++;
-                }
-                dataReader.Close();
+                dataReader = cmd.ExecuteReader(); 
+            // Получить объект приложения Word.
+            Word._Application word_app = new Word.Application();
+
+            // Сделать Word видимым (необязательно).
+            word_app.Visible = true;
+            // Создаем документ Word.
+            object missing = Type.Missing;
+             Word._Document word_doc = word_app.Documents.Add(
+                ref missing, ref missing, ref missing, ref missing);
+            Word.Range tableLocation = word_doc.Range(0, 0);
+            word_doc.Tables.Add(tableLocation, 25, 1);
+            Word.Table table = word_doc.Tables[1];
+            table.set_Style("Сетка таблицы 1");
+            while (dataReader.Read())
+            {
+                table.Cell(counter, 1).Range.Text = dataReader["lname"].ToString() + " " + dataReader["fname"].ToString() + " " + dataReader["mname"].ToString();
+                counter++;
+                if (counter > 25) break;
+            }
+            dataReader.Close();
         }
     }
 }
