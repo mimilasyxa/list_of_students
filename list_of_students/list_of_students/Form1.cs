@@ -54,16 +54,16 @@ namespace list_of_students // После неудачной попытки пе�
 
                 using (MySqlCommand cmd = new MySqlCommand(sql, con))
                 {
-                    //try
-                    //{
+                    try
+                    {
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Добавление прошло успешно", "Добавление прошло успешно", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    //}
-                    //catch (MySql.Data.MySqlClient.MySqlException)
-                    //{
-                       // MessageBox.Show("Выберите группу для абитуриента", "Ошибка");
+                    }
+                    catch (MySql.Data.MySqlClient.MySqlException)
+                    {
+                        MessageBox.Show("Выберите группу для абитуриента", "Ошибка");
 
-                    //}
+                    }
                 }
             }
             catch (Exception)
