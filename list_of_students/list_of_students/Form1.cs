@@ -171,41 +171,60 @@ namespace list_of_students // После неудачной попытки пе�
         }
 
         private void button3_Click(object sender, EventArgs e) // Вывод отфильтрованных студентов в книгу MS Excel
-        { 
-                int row = 2; // Начинаем с 2 т.к первая строчка хранит в себе оглавление таблицы
-                int counter = 1;
-                string sql = string.Format("select id_student, lname, fname, mname, " +
+        {
+            int table_id = 1;
+            int counter = 1;
+            string sql1 = string.Format("select max_countPlebs, max_countFreePlebs from name_specialty where id_name_specialty = '{0}'", (comboBox1.SelectedIndex + 1));
+           string sql2 = string.Format("select id_student, lname, fname, mname, " +
                     " average_score, original_documents, budget, name_specialty, " + 
                     " specialty_code from student, name_specialty, original_documents where student.fk_id_name_specialty = '{0}' and  student.fk_id_name_specialty = name_specialty.id_name_specialty  " + " " +
                     "and student.fk_id_original_documents = original_documents.id_original_documents order by average_score desc, fk_id_original_documents asc;", (comboBox1.SelectedIndex + 1));
-                MySqlCommand cmd = new MySqlCommand(sql, con);
-                MySqlDataReader dataReader;
-                if (comboBox1.Text == "<Выбор направления>")
-                {
-                    MessageBox.Show("Выбери группу", "Ошибка");
-                    Application.Restart();
-                }
-                dataReader = cmd.ExecuteReader(); 
+            MySqlCommand cmd = new MySqlCommand(sql1, con);
+            MySqlDataReader dataReader;
+            if (comboBox1.Text == "<Выбор направления>")
+            {
+                MessageBox.Show("Выбери группу", "Ошибка");
+                Application.Restart();
+            }
+                dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
+            {
+                int plebs = Convert.ToInt32(dataReader["max_countPlebs"]);
+                int freePlebs = Convert.ToInt32(dataReader["max_countFreePlebs"]);
+            }
+            dataReader.Close();
             // Получить объект приложения Word.
+            MySqlCommand cmd1 = new MySqlCommand(sql2, con);
+            MySqlDataReader dataReader1;
+            dataReader1 = cmd1.ExecuteReader();
             Word._Application word_app = new Word.Application();
 
             // Сделать Word видимым (необязательно).
             word_app.Visible = true;
             // Создаем документ Word.
             object missing = Type.Missing;
-             Word._Document word_doc = word_app.Documents.Add(
+            Word._Document word_doc = word_app.Documents.Add(
                 ref missing, ref missing, ref missing, ref missing);
-            Word.Range tableLocation = word_doc.Range(0, 0);
-            word_doc.Tables.Add(tableLocation, 25, 1);
+            // for (int i = 0; i< )
+            Word.Range myRange = word_doc.Range(0, 0);
+           // Word.Range tableLocation = word_doc.Range(0, 0);
+            word_doc.Tables.Add(myRange, 25, 1, ref missing, ref missing);
             Word.Table table = word_doc.Tables[1];
             table.set_Style("Сетка таблицы 1");
-            while (dataReader.Read())
+            while (dataReader1.Read())
             {
-                table.Cell(counter, 1).Range.Text = dataReader["lname"].ToString() + " " + dataReader["fname"].ToString() + " " + dataReader["mname"].ToString();
+                word_doc.Tables[table_id].Cell(counter, 1).Range.Text = dataReader1["lname"].ToString() + " " + dataReader1["fname"].ToString() + " " + dataReader1["mname"].ToString();
                 counter++;
-                if (counter > 25) break;
+                if (counter > 25)
+                {
+                    table_id++;
+                    counter = 1;
+                    myRange = word_doc.Range(25, 1);
+                    word_doc.Tables.Add(myRange, 25, 1, ref missing, ref missing);
+                    word_doc.Tables[table_id].set_Style("Сетка таблицы 1");
+                }
             }
-            dataReader.Close();
+            dataReader1.Close();
         }
     }
 }
