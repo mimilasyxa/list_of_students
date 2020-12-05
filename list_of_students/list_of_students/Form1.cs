@@ -20,9 +20,9 @@ namespace list_of_students // После неудачной попытки пе�
         //public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
         public MySqlConnection con = new MySqlConnection(Connect);
         Random rand = new Random();
-        public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх", "Морто", "Кринж"};
-        public static string[] fname = { "Алекс", "Кортни", "Тейлор", "Медисон", "Пейдж", "Эрин", "Пендс", "Флос" };
-        public static string[] mname = { "Александровна", "Никитович", "Матвеевич", "Михайловна", "Денисович", "Романович", "Олегович", "Фортнайтович"};
+        public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх", "Морто", "Кринж","Вортекс","Трапой"};
+        public static string[] fname = { "Алекс", "Кортни", "Тейлор", "Медисон", "Пейдж", "Эрин", "Пендс", "Флос", "Колд", "Джейсон" };
+        public static string[] mname = { "Александровна", "Никитович", "Матвеевич", "Михайловна", "Денисович", "Романович", "Олегович", "Фортнайтович", "Артёмович","Петрович"};
         public Form1()
         {
             InitializeComponent();
@@ -74,15 +74,15 @@ namespace list_of_students // После неудачной попытки пе�
         private string GetString(string type) { // rand.Next(количество айтемов в массиве), массивы в начале кода
             if (type == "lname")
             {
-                return lname[rand.Next(7)];
+                return lname[rand.Next(9)];
             }
             if (type == "fname")
             {
-                return fname[rand.Next(7)];
+                return fname[rand.Next(9)];
             }
             if (type == "mname")
             {
-                return mname[rand.Next(7)];
+                return mname[rand.Next(9)];
             }
             else
             {
@@ -172,13 +172,14 @@ namespace list_of_students // После неудачной попытки пе�
 
         private void button3_Click(object sender, EventArgs e) // Вывод отфильтрованных студентов в книгу MS Excel
         {
+            int plebs = 0;
+            int freePlebs = 0;
             int table_id = 1;
             int counter = 1;
             string sql1 = string.Format("select max_countPlebs, max_countFreePlebs from name_specialty where id_name_specialty = '{0}'", (comboBox1.SelectedIndex + 1));
-           string sql2 = string.Format("select id_student, lname, fname, mname, " +
-                    " average_score, original_documents, budget, name_specialty, " + 
-                    " specialty_code from student, name_specialty, original_documents where student.fk_id_name_specialty = '{0}' and  student.fk_id_name_specialty = name_specialty.id_name_specialty  " + " " +
-                    "and student.fk_id_original_documents = original_documents.id_original_documents order by average_score desc, fk_id_original_documents asc;", (comboBox1.SelectedIndex + 1));
+            string sql_plebs = string.Format("select * from student where fk_id_original_documents = 1  and fk_id_name_specialty = {0} and budget = 'Да' order by average_score desc;", (comboBox1.SelectedIndex + 1));
+            string sql_kings = string.Format("select * from student where fk_id_original_documents = 1  and fk_id_name_specialty = {0} and budget = 'Нет' order by average_score desc;", (comboBox1.SelectedIndex + 1));
+
             MySqlCommand cmd = new MySqlCommand(sql1, con);
             MySqlDataReader dataReader;
             if (comboBox1.Text == "<Выбор направления>")
@@ -189,42 +190,64 @@ namespace list_of_students // После неудачной попытки пе�
                 dataReader = cmd.ExecuteReader();
             while (dataReader.Read())
             {
-                int plebs = Convert.ToInt32(dataReader["max_countPlebs"]);
-                int freePlebs = Convert.ToInt32(dataReader["max_countFreePlebs"]);
+                plebs = Convert.ToInt32(dataReader["max_countPlebs"]);
+                freePlebs = Convert.ToInt32(dataReader["max_countFreePlebs"]);
             }
             dataReader.Close();
             // Получить объект приложения Word.
-            MySqlCommand cmd1 = new MySqlCommand(sql2, con);
+
+            List<string> all_students = new List<string>();
+            //List<string> all_students;
+            MySqlCommand cmd1 = new MySqlCommand(sql_plebs, con);
             MySqlDataReader dataReader1;
             dataReader1 = cmd1.ExecuteReader();
+            for (int i = 0; i < freePlebs; i++)
+            {
+                dataReader1.Read();
+                all_students.Add(dataReader1["lname"].ToString() + " " + dataReader1["fname"].ToString() + " " + dataReader1["mname"].ToString());
+            }
+            all_students.Sort();
+            dataReader1.Close();
+            MySqlCommand cmd2 = new MySqlCommand(sql_kings, con);
+            MySqlDataReader dataReader2;
+            dataReader2 = cmd2.ExecuteReader();
+            for (int i = 0; i < (plebs - freePlebs); i++)
+            {
+                dataReader2.Read();
+                all_students.Add(dataReader2["lname"].ToString() + " " + dataReader2["fname"].ToString() + " " + dataReader2["mname"].ToString());
+            }
+            all_students.Sort();
+            dataReader2.Close();
+            // Работа с вордом, создание и всякое
             Word._Application word_app = new Word.Application();
-
-            // Сделать Word видимым (необязательно).
             word_app.Visible = true;
-            // Создаем документ Word.
             object missing = Type.Missing;
             Word._Document word_doc = word_app.Documents.Add(
                 ref missing, ref missing, ref missing, ref missing);
-            // for (int i = 0; i< )
+            // Переменная ренжи и создание первой таблице с отдельной ренжой 0-25 т.к. она первая. Задание стиля для таблицы иначе его вообще не будет
+            Word.Range initialRange;
             Word.Range myRange = word_doc.Range(0, 0);
-           // Word.Range tableLocation = word_doc.Range(0, 0);
             word_doc.Tables.Add(myRange, 25, 1, ref missing, ref missing);
             Word.Table table = word_doc.Tables[1];
             table.set_Style("Сетка таблицы 1");
-            while (dataReader1.Read())
+            // Заполнение таблиц элементами из листа all_students
+            for (int i = 0; i < all_students.Count(); i++)
             {
-                word_doc.Tables[table_id].Cell(counter, 1).Range.Text = dataReader1["lname"].ToString() + " " + dataReader1["fname"].ToString() + " " + dataReader1["mname"].ToString();
+                word_doc.Tables[table_id].Cell(counter, 1).Range.Text = all_students[i];
                 counter++;
-                if (counter > 25)
+                if (counter > 25 & table_id < (plebs/25))
                 {
+                    initialRange = word_doc.Tables[table_id].Range;
+                    initialRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+                    initialRange.InsertParagraphAfter();
+                    initialRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
                     table_id++;
                     counter = 1;
-                    myRange = word_doc.Range(25, 1);
-                    word_doc.Tables.Add(myRange, 25, 1, ref missing, ref missing);
+                    word_doc.Tables.Add(initialRange, 25, 1, ref missing, ref missing);
                     word_doc.Tables[table_id].set_Style("Сетка таблицы 1");
                 }
             }
-            dataReader1.Close();
+  
         }
     }
 }
