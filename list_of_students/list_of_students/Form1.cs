@@ -16,8 +16,8 @@ namespace list_of_students // После неудачной попытки пе�
 {
     public partial class Form1 : Form
     {
-        public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
-        //public static string Connect = "server=localhost;port=3307;username=root;password=root;database=students";
+        //public static string Connect = "Server=localhost;Database=students;user=root;password=123123;charset=utf8";// все строки переехали сюда чтобы был доступ у всех функций
+        public static string Connect = "server=localhost;port=3306;username=root;password=root;database=students";
         public MySqlConnection con = new MySqlConnection(Connect);
         Random rand = new Random();
         public static string[] lname =  {"Смит", "Вэй", "Мюллер", "Дламини", "Сильва", "Сингх", "Морто", "Кринж", "Вортекс", "Трапой", "Стивенс", "Волкер", "Перри", "Элиот", "Сандерс", "Андерсон", "Хавкинс", "Майерс", "Лонг", "Джордан"};
@@ -170,11 +170,14 @@ namespace list_of_students // После неудачной попытки пе�
             secondform.Show();
         }
 
-        private void button3_Click(object sender, EventArgs e) // Вывод отфильтрованных студентов в книгу MS Excel
+        private void button3_Click(object sender, EventArgs e) // Вывод отфильтрованных студентов в word
         {
+            int group_counter = 0;
+            string[] letter = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k" };
+            int group_name = rand.Next(200, 800);
             int plebs = 0;
             int freePlebs = 0;
-            int table_id = 1;
+            int table_id = 2;
             int counter = 1;
             string sql1 = string.Format("select max_countPlebs, max_countFreePlebs from name_specialty where id_name_specialty = '{0}'", (comboBox1.SelectedIndex + 1));
             string sql_plebs = string.Format("select * from student where fk_id_original_documents = 1  and fk_id_name_specialty = {0} and budget = 'Да' order by average_score desc;", (comboBox1.SelectedIndex + 1));
@@ -184,7 +187,7 @@ namespace list_of_students // После неудачной попытки пе�
             MySqlDataReader dataReader;
             if (comboBox1.Text == "<Выбор направления>")
             {
-                MessageBox.Show("Выбери группу", "Ошибка");
+                MessageBox.Show("Выбери направление", "Ошибка");
                 Application.Restart();
             }
                 dataReader = cmd.ExecuteReader();
@@ -227,16 +230,33 @@ namespace list_of_students // После неудачной попытки пе�
             // Переменная ренжи и создание первой таблице с отдельной ренжой 0-25 т.к. она первая. Задание стиля для таблицы иначе его вообще не будет
             Word.Range initialRange;
             Word.Range myRange = word_doc.Range(0, 0);
-            word_doc.Tables.Add(myRange, 25, 1, ref missing, ref missing);
+            word_doc.Tables.Add(myRange, 1, 1, ref missing, ref missing);
             Word.Table table = word_doc.Tables[1];
-            table.set_Style("Сетка таблицы 1");
+            word_doc.Tables[1].Cell(1, 1).Range.Text = (group_name.ToString() + letter[group_counter]);
+            initialRange = word_doc.Tables[1].Range;
+            initialRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+            initialRange.InsertParagraphAfter(); 
+            initialRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+            word_doc.Tables.Add(initialRange, 25, 1, ref missing, ref missing);
+            word_doc.Tables[table_id].set_Style("Сетка таблицы 1");
             // Заполнение таблиц элементами из листа all_students
             for (int i = 0; i < all_students.Count(); i++)
             {
-                word_doc.Tables[table_id].Cell(counter, 1).Range.Text = all_students[i];
+                word_doc.Tables[table_id].Cell(counter, 1).Range.Text =  ((i % 25) + 1).ToString() + ". " + all_students[i];
                 counter++;
-                if (counter > 25 & table_id < (plebs/25))
+                if (counter > 25 & (table_id) < (plebs/25) * 2)
                 {
+                    initialRange = word_doc.Tables[table_id].Range;
+                    initialRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+                    initialRange.InsertParagraphAfter();
+                    initialRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
+                    table_id++;
+                    counter = 1;
+                    word_doc.Tables.Add(initialRange, 1, 1, ref missing, ref missing);
+                    group_counter++;
+                    word_doc.Tables[table_id].Cell(1, 1).Range.Text = (group_name.ToString() + letter[group_counter]);
+
+
                     initialRange = word_doc.Tables[table_id].Range;
                     initialRange.Collapse(Word.WdCollapseDirection.wdCollapseEnd);
                     initialRange.InsertParagraphAfter();
